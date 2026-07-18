@@ -7,6 +7,11 @@ variable "region" {
   description = "GCP region for always-free resources"
   type        = string
   default     = "us-central1"
+
+  validation {
+    condition     = contains(["us-central1", "us-east1", "us-west1"], var.region)
+    error_message = "Always-free e2-micro is limited to us-central1, us-east1, or us-west1."
+  }
 }
 
 variable "zone" {
