@@ -12,7 +12,7 @@ cd /opt/minecraft
 
 VERSION="${minecraft_version}"
 LATEST_BUILD="$(curl -fsSL "https://api.papermc.io/v2/projects/paper/versions/${minecraft_version}" | jq -r '.builds[-1]')"
-PAPER_URL="https://api.papermc.io/v2/projects/paper/versions/${minecraft_version}/builds/${LATEST_BUILD}/downloads/paper-${minecraft_version}-${LATEST_BUILD}.jar"
+PAPER_URL="https://api.papermc.io/v2/projects/paper/versions/${minecraft_version}/builds/$${LATEST_BUILD}/downloads/paper-${minecraft_version}-$${LATEST_BUILD}.jar"
 
 curl -fsSL "$PAPER_URL" -o /opt/minecraft/paper.jar
 chown minecraft:minecraft /opt/minecraft/paper.jar
