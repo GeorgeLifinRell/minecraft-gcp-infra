@@ -1,0 +1,88 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_id:
+        description: GCP project ID
+        required: true
+        type: string
+      region:
+        description: GCP region
+        required: true
+        default: us-central1
+        type: string
+      zone:
+        description: GCP zone
+        required: true
+        default: us-central1-a
+        type: string
+      instance_name:
+        description: Minecraft instance name
+        required: true
+        default: minecraft-free
+        type: string
+      boot_disk_size_gb:
+        description: Boot disk size in GB
+        required: true
+        default: "20"
+        type: string
+      minecraft_version:
+        description: Minecraft version
+        required: true
+        default: "1.21.1"
+        type: string
+      xms_mb:
+        description: Initial JVM heap (MB)
+        required: true
+        default: "512"
+        type: string
+      xmx_mb:
+        description: Max JVM heap (MB)
+        required: true
+        default: "768"
+        type: string
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+      TF_VAR_project_id: ${{ inputs.project_id }}
+      TF_VAR_region: ${{ inputs.region }}
+      TF_VAR_zone: ${{ inputs.zone }}
+      TF_VAR_instance_name: ${{ inputs.instance_name }}
+      TF_VAR_boot_disk_size_gb: ${{ inputs.boot_disk_size_gb }}
+      TF_VAR_minecraft_version: ${{ inputs.minecraft_version }}
+      TF_VAR_xms_mb: ${{ inputs.xms_mb }}
+      TF_VAR_xmx_mb: ${{ inputs.xmx_mb }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate GCP credentials secret
+        run: |
+          if [ -z "${{ secrets.GCP_CREDENTIALS }}" ]; then
+            echo "Missing required secret: GCP_CREDENTIALS"
+            exit 1
+          fi
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
