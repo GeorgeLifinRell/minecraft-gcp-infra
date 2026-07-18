@@ -43,6 +43,9 @@ on:
         default: "768"
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
