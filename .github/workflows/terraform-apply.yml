@@ -25,12 +25,12 @@ on:
       boot_disk_size_gb:
         description: Boot disk size in GB
         required: true
-        default: "20"
+        default: "30"
         type: string
       minecraft_version:
         description: Minecraft version
         required: true
-        default: "1.21.1"
+        default: "1.26.0"
         type: string
       xms_mb:
         description: Initial JVM heap (MB)
